@@ -271,8 +271,10 @@ P_best.j=j;
                 else
                     glik    = -2*e*(aF-aa.*C-ba);  % gradient
                 end
-                g       = glik + grad_lnprior - z*M'*(n.^-1);
-                H2(d0)  = n.^-2;                % log barrier part of the Hessian
+                % MK 1./n works faster than n.^-1
+                n1 = 1./n;
+                g       = glik + grad_lnprior - z*M'*n1;
+                H2(d0)  = n1.^2;                % log barrier part of the Hessian
                 H       = H1 - z*(M'*H2*M);     % Hessian
                 d   = H\g;                     % direction to step using newton-raphson
                 hit = -n./(M*d);                % step within constraint boundaries
