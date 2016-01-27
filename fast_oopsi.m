@@ -276,7 +276,12 @@ P_best.j=j;
                 g       = glik + grad_lnprior - z*M'*n1;
                 H2(d0)  = n1.^2;                % log barrier part of the Hessian
                 H       = H1 - z*(M'*H2*M);     % Hessian
-                d   = H\g;                     % direction to step using newton-raphson
+                if issparse(g)
+                    d   = H\g;                     % direction to step using newton-raphson
+                else
+                    % this happens for some traces
+                    d   = H\sparse(g);           
+                end
                 hit = -n./(M*d);                % step within constraint boundaries
                 hit=hit(hit>0);
                 if any(hit<1)
